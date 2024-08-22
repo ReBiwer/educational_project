@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from os import getenv
 from pathlib import Path
 import logging.config
+from dotenv import load_dotenv
 
 from django.urls import reverse_lazy
 
@@ -20,6 +21,7 @@ from django.urls import reverse_lazy
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASE_DIR = BASE_DIR / 'database'
 DATABASE_DIR.mkdir(exist_ok=True)
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -31,9 +33,9 @@ SECRET_KEY = getenv('DJANGO_SECRET_KEY')
 DEBUG = getenv('DJANGO_DEBUG', '0') == '1'
 
 ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "0.0.0.0",
-] + getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
+                    "127.0.0.1",
+                    "0.0.0.0",
+                ] + getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -177,22 +179,22 @@ LOGIN_URL = reverse_lazy("myauth:login")
 LOGLEVEL = getenv('DJANGO_LOGLEVEL', 'info').upper()
 logging.config.dictConfig({
     "version": 1,
-        "disable_existing_loggers": True,
-        "formatters": {
-            "console": {
-                "format": f"%(asctime)s %(levelname)s [%(name)s:%(lineno)s] %(module)s %(message)s",
-            }
+    "disable_existing_loggers": True,
+    "formatters": {
+        "console": {
+            "format": f"%(asctime)s %(levelname)s [%(name)s:%(lineno)s] %(module)s %(message)s",
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "console",
         },
-        "handlers": {
-            "console": {
-                "class": "logging.StreamHandler",
-                "formatter": "console",
-            },
+    },
+    "loggers": {
+        '': {
+            "level": LOGLEVEL,
+            "handlers": ["console"]
         },
-        "loggers": {
-            '': {
-                "level": LOGLEVEL,
-                "handlers": ["console"]
-            },
-        },
+    },
 })
